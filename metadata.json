@@ -1,0 +1,6 @@
+{
+  "name": "NEET Prep & Weak Spot Analyzer",
+  "description": "An AI-powered application for NEET aspirants to take targeted quizzes based on the NCERT syllabus, identify weak spots, get personalized study plans, and discover high-quality resources.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
