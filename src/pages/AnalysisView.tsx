@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { analyzeQuizResult } from '../lib/gemini';
 import type { QuizResult, WeakSpotAnalysis } from '../types';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { AlertCircle, CheckCircle2, ChevronRight, BookOpen, Target, ArrowRight } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -63,6 +63,14 @@ export function AnalysisView() {
   ];
   const COLORS = ['#5A5A40', '#E4E3E0'];
 
+  const barData = [
+    { subject: 'Physics', score: 65 },
+    { subject: 'Chemistry', score: 72 },
+    { subject: 'Botany', score: 85 },
+    { subject: 'Zoology', score: 58 },
+    { subject: 'Current', score: Math.round(scorePercentage) },
+  ];
+
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-8 min-h-screen">
       <div className="flex items-center justify-between mb-8">
@@ -116,6 +124,27 @@ export function AnalysisView() {
 
           <motion.div
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+            className="bg-white rounded-[32px] p-8 border border-[#E4E3E0] shadow-sm"
+          >
+            <h3 className="font-bold text-[#4A4A3A]/50 uppercase tracking-widest text-[10px] mb-6">Subject Breakdown</h3>
+            <div className="h-48 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={barData} margin={{ top: 0, right: 0, left: -25, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E4E3E0" />
+                  <XAxis dataKey="subject" tick={{ fontSize: 10, fill: '#4A4A3A', opacity: 0.7 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: '#4A4A3A', opacity: 0.7 }} axisLine={false} tickLine={false} />
+                  <RechartsTooltip 
+                    cursor={{ fill: '#F5F5F0' }}
+                    contentStyle={{ borderRadius: '12px', border: '1px solid #E4E3E0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  />
+                  <Bar dataKey="score" fill="#5A5A40" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
             className="bg-[#5A5A40] rounded-[32px] p-8 text-white shadow-md relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 p-4 opacity-10">
@@ -174,14 +203,24 @@ export function AnalysisView() {
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
             className="bg-white rounded-[32px] p-8 border border-[#E4E3E0] shadow-sm"
           >
-            <h3 className="font-serif font-bold text-[#5A5A40] text-xl mb-6">Targeted Action Plan</h3>
+            <h3 className="font-serif font-bold text-[#5A5A40] text-xl mb-6">Personalized Study Plan</h3>
             <div className="space-y-4">
               {analysis?.actionPlan.map((step, i) => (
-                <div key={i} className="flex items-start bg-[#F5F5F0]/50 rounded-2xl p-4 border border-[#E4E3E0]/50">
-                  <div className="bg-white border border-[#E4E3E0] text-[#5A5A40] font-bold w-8 h-8 rounded-full flex items-center justify-center shrink-0 mr-4 text-sm mt-0.5 shadow-sm">
-                    {i + 1}
+                <div key={i} className="flex flex-col sm:flex-row items-start sm:items-center bg-[#F5F5F0]/50 rounded-2xl p-4 border border-[#E4E3E0]/50 relative overflow-hidden">
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#5A5A40]"></div>
+                  <div className="flex-1 pl-3 pr-4 mb-3 sm:mb-0">
+                    <div className="flex items-center space-x-2 mb-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#4A4A3A]/60 bg-[#E4E3E0]/50 px-2 py-0.5 rounded-md">
+                        {step.type}
+                      </span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#5A5A40] bg-white border border-[#E4E3E0] px-2 py-0.5 rounded-md">
+                        {step.durationEstimate}
+                      </span>
+                    </div>
+                    <h4 className="font-bold text-[#5A5A40] mt-1">{step.task}</h4>
+                    <p className="text-xs text-[#4A4A3A]/80 mt-1 leading-relaxed">{step.details}</p>
                   </div>
-                  <p className="text-[#4A4A3A] font-medium leading-relaxed">{step}</p>
+                  <ChevronRight className="w-5 h-5 text-[#5A5A40]/30 hidden sm:block shrink-0" />
                 </div>
               ))}
             </div>

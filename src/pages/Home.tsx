@@ -8,6 +8,8 @@ import React from 'react';
 export function Home() {
   const navigate = useNavigate();
   const [selectedSubject, setSelectedSubject] = useState<SubjectKey | null>(null);
+  const [difficulty, setDifficulty] = useState<"Easy" | "Medium" | "Hard">("Medium");
+  const [numQuestions, setNumQuestions] = useState<number>(5);
 
   const subjectIcons: Record<SubjectKey, React.ElementType> = {
     physics: Atom,
@@ -18,7 +20,7 @@ export function Home() {
 
   const handleStartQuiz = (topic: string) => {
     if (!selectedSubject) return;
-    navigate(`/quiz?subject=${selectedSubject}&topic=${encodeURIComponent(topic)}`);
+    navigate(`/quiz?subject=${selectedSubject}&topic=${encodeURIComponent(topic)}&difficulty=${difficulty}&q=${numQuestions}`);
   };
 
   return (
@@ -76,11 +78,37 @@ export function Home() {
               animate={{ opacity: 1, x: 0 }}
               className="bg-white border border-[#E4E3E0] rounded-[32px] p-8 shadow-sm flex flex-col h-full"
             >
-              <div className="flex items-center space-x-3 mb-6 border-b border-[#E4E3E0] pb-4">
-                <BrainCircuit className="w-6 h-6 text-[#5A5A40]" />
-                <h2 className="text-xl font-serif font-bold text-[#5A5A40]">
-                  {NEET_SYLLABUS[selectedSubject].name} Chapters
-                </h2>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 border-b border-[#E4E3E0] pb-4 gap-4">
+                <div className="flex items-center space-x-3">
+                  <BrainCircuit className="w-6 h-6 text-[#5A5A40]" />
+                  <h2 className="text-xl font-serif font-bold text-[#5A5A40]">
+                    {NEET_SYLLABUS[selectedSubject].name} Chapters
+                  </h2>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center bg-[#F5F5F0] p-1 rounded-lg">
+                    {(["Easy", "Medium", "Hard"] as const).map(level => (
+                      <button
+                        key={level}
+                        onClick={() => setDifficulty(level)}
+                        className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${difficulty === level ? "bg-white text-[#5A5A40] shadow-sm" : "text-[#4A4A3A]/50 hover:text-[#5A5A40]"}`}
+                      >
+                        {level}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex items-center bg-[#F5F5F0] p-1 rounded-lg">
+                    {[5, 10, 20, 30, 50].map(num => (
+                      <button
+                        key={num}
+                        onClick={() => setNumQuestions(num)}
+                        className={`flex-1 px-2 py-1.5 text-xs font-bold rounded-md transition-all ${numQuestions === num ? "bg-white text-[#5A5A40] shadow-sm" : "text-[#4A4A3A]/50 hover:text-[#5A5A40]"}`}
+                      >
+                        {num} Qs
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
               <div className="grid sm:grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
                 {NEET_SYLLABUS[selectedSubject].topics.map((topic) => (

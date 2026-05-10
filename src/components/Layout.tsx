@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { BookOpen, Activity, LayoutDashboard, Database } from 'lucide-react';
+import { BookOpen, Activity, LayoutDashboard, Database, Layers, BarChart } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 export function Layout() {
@@ -7,6 +7,8 @@ export function Layout() {
 
   const links = [
     { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/analytics', label: 'Analytics', icon: BarChart },
+    { href: '/flashcards', label: 'Flashcards', icon: Layers },
     { href: '/resources', label: 'Study Material', icon: Database },
   ];
 

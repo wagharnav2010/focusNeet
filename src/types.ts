@@ -9,6 +9,8 @@ export interface Question {
 }
 
 export interface QuizResult {
+  id?: string;
+  timestamp?: number;
   subject: string;
   topic: string;
   totalQuestions: number;
@@ -20,10 +22,25 @@ export interface QuizResult {
   }[];
 }
 
+export interface StudyTask {
+  task: string;
+  type: 'Read' | 'Practice' | 'Watch';
+  details: string;
+  durationEstimate: string;
+}
+
+export interface Flashcard {
+  id: string;
+  front: string;
+  back: string;
+  status: 'new' | 'known' | 'review';
+  topic: string;
+}
+
 export interface WeakSpotAnalysis {
   overallAssessment: string;
   weakTopics: string[];
   strongTopics: string[];
-  actionPlan: string[];
+  actionPlan: StudyTask[];
   recommendedResources: string[];
 }

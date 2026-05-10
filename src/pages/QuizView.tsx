@@ -12,6 +12,8 @@ export function QuizView() {
   const navigate = useNavigate();
   const subjectKey = searchParams.get('subject') as SubjectKey;
   const topic = searchParams.get('topic');
+  const difficulty = (searchParams.get('difficulty') || 'Medium') as "Easy" | "Medium" | "Hard";
+  const numQuestions = parseInt(searchParams.get('q') || '5', 10);
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +32,7 @@ export function QuizView() {
       try {
         setLoading(true);
         setError(null);
-        const q = await generateQuizQuestions(subjectKey, topic!, 5);
+        const q = await generateQuizQuestions(subjectKey, topic!, numQuestions, difficulty);
         if (q && q.length > 0) {
           setQuestions(q);
         } else {
@@ -65,12 +67,22 @@ export function QuizView() {
     });
 
     const result: QuizResult = {
+      id: `${Date.now()}-${Math.random()}`,
+      timestamp: Date.now(),
       subject: subjectKey,
       topic: topic!,
       totalQuestions: questions.length,
       correctAnswers: correctCount,
       answers: finalAnswers
     };
+
+    try {
+      const pastResults = JSON.parse(localStorage.getItem('focusneet_history') || '[]');
+      pastResults.push(result);
+      localStorage.setItem('focusneet_history', JSON.stringify(pastResults));
+    } catch(e) {
+      console.error("Failed to save history", e);
+    }
 
     // Store in location state for analysis page
     navigate('/analysis', { state: { result } });
